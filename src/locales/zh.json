@@ -1,3 +1,25 @@
 {
-  "title":"标题"
+  "title":"CDN 插件",
+  "desc": "适用场景：希望将附件上传至个人或公司指定CDN源，并获取CDN链接。<br/>目前支持：阿里云 √  腾讯云 ×  七牛云 ×。若有其它CDN源的需求，请添加插件群 push 作者。",
+  "ossTip": "Tip：请填写如下阿里云oss配置信息",
+  "placeholder": {
+    "accessKeyId": "请填写 accessKeyId",
+    "accessKeySecret": "请填写 accessKeySecret",
+    "region": "例如 oss-cn-beijing",
+    "bucket": "请填写 bucket 名称",
+    "attchment": "请选择附件所在字段",
+    "link": "请选择链接所在字段"
+  },
+  "fieldSelectedTip": "Tip：请选择附件字段和链接字段",
+  "labels": {
+    "oss": "OSS",
+    "attchment": "附件",
+    "link": "链接"
+  },
+  "tranfer": "图床转换",
+  "toast": {
+    "lackRequiredInfo": "请填写必要信息",
+    "isTransfering": "正在转换中...",
+    "finished": "转换完成"
+  }
 }

@@ -1,3 +1,25 @@
 {
-  "title":"title"
+  "title": "CDN Plugin",
+  "desc": "Applicable scenarios: For uploading attachments to a specified personal or company CDN source and obtaining the CDN link.<br/>Currently supported: Alibaba Cloud √ Tencent Cloud × Qiniu Cloud ×. If you need support for other CDN sources, please join the plugin group and push the author.",
+  "ossTip": "Tip: Please fill in the following Alibaba Cloud OSS configuration information",
+  "placeholder": {
+    "accessKeyId": "Please fill in the accessKeyId",
+    "accessKeySecret": "Please fill in the accessKeySecret",
+    "region": "e.g., oss-cn-beijing",
+    "bucket": "Please fill in the bucket name",
+    "attchment": "Please select the field where the attachment is located",
+    "link": "Please select the field where the link is located"
+  },
+  "fieldSelectedTip": "Tip: Please select the attachment and link fields",
+  "labels": {
+    "oss": "OSS",
+    "attchment": "Attachment",
+    "link": "Link"
+  },
+  "tranfer": "Image Hosting Conversion",
+  "toast": {
+    "lackRequiredInfo": "Please fill in the required information",
+    "isTransfering": "Transferring...",
+    "finished": "Conversion Completed"
+  }
 }

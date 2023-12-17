@@ -1,29 +1,29 @@
 <template>
-  <div style="width: 100%;padding-left: 10px;border-left: 5px solid #2598f8;margin-bottom: 20px;padding-top: 5px;">CDN 插件</div>
-  <div style="line-height: 1.5;font-size: 14px;color: #909399;">适用场景：希望将附件上传至个人或公司指定CDN网址，并获取CDN链接</div>
+  <div style="width: 100%;padding-left: 10px;border-left: 5px solid #2598f8;margin-bottom: 20px;padding-top: 5px;">{{ $t('title') }}</div>
+  <div style="line-height: 1.5;font-size: 14px;color: #909399;" v-html="$t('desc')"></div>
   <el-form style="margin-top: 30px;" ref="form" :model="formData" label-width="60px">
-    <el-alert  title="Tip：请填写如下阿里云oss配置信息" type="info" />
+    <el-alert style="background-color: #e1eaff;color: #606266;"  :title="$t('ossTip')" type="info" />
     <!-- oss 配置部分 -->
     <el-form-item label="OSS" size="large" required>
-      accessKeyId<el-input type="password" v-model="ossConfig.accessKeyId" placeholder="请填写 accessKeyId" />
-      accessKeySecret<el-input type="password" v-model="ossConfig.accessKeySecret" placeholder="请填写 accessKeySecret" />
-      region<el-input v-model="ossConfig.region" placeholder="例如 oss-cn-beijing" />
-      bucket<el-input type="password" v-model="ossConfig.bucket" placeholder="请填写 bucket 名称" />
+      accessKeyId<el-input type="password" v-model="ossConfig.accessKeyId" :placeholder="$t('placeholder.accessKeyId')" />
+      accessKeySecret<el-input type="password" v-model="ossConfig.accessKeySecret" :placeholder="$t('placeholder.accessKeySecret')" />
+      region<el-input v-model="ossConfig.region" :placeholder="$t('placeholder.region')" />
+      bucket<el-input type="password" v-model="ossConfig.bucket" :placeholder="$t('placeholder.bucket')" />
     </el-form-item>
 
-    <el-alert style="margin: 20px 0 20px 0;" title="Tip：请选择附件字段和链接字段" type="info" />
-    <el-form-item label="附件" size="large" required>
-      <el-select v-model="attchImgFieldId" placeholder="请选择附件所在字段" style="width: 100%">
+    <el-alert style="margin: 20px 0 20px 0;background-color: #e1eaff;color: #606266;" :title="$t('fieldSelectedTip')" type="info" />
+    <el-form-item :label="$t('labels.attchment')" size="large" required>
+      <el-select v-model="attchImgFieldId" :placeholder="$t('placeholder.attchment')" style="width: 100%">
         <el-option v-for="meta in fieldListSeView" :key="meta.id" :label="meta.name" :value="meta.id" />
       </el-select>
     </el-form-item>
-    <el-form-item label="链接" size="large" required>
-      <el-select v-model="linkFieldId" placeholder="请选择链接所在字段" style="width: 100%">
+    <el-form-item :label="$t('labels.link')" size="large" required>
+      <el-select v-model="linkFieldId" :placeholder="$t('placeholder.link')" style="width: 100%">
         <el-option v-for="meta in fieldListSeView" :key="meta.id" :label="meta.name" :value="meta.id" />
       </el-select>
     </el-form-item>
 
-    <el-button @click="imgConvertLink">图床转换</el-button>
+    <el-button @click="imgConvertLink">{{ $t('tranfer') }}</el-button>
 
   </el-form>
 </template>
@@ -33,6 +33,7 @@
 import { bitable } from '@lark-base-open/js-sdk'
 import { ref, onMounted, onUnmounted, computed, h } from 'vue';
 import OSS from 'ali-oss';
+import { useI18n } from 'vue-i18n';
 
 // 数据 -- start
 const attchImgFieldId = ref('')
@@ -49,7 +50,7 @@ const ossConfig = ref({
 // 数据 -- end
 
 const fileUrl = ref('');
-
+const { t } = useI18n();
 
 
 // -- 核心算法区域
@@ -61,7 +62,7 @@ const imgConvertLink = async() => {
   } else {
     await bitable.ui.showToast({
       toastType: 'warning',
-      message: '请填写必要信息'
+      message: t('toast.lackRequiredInfo')
     })
     return
   }
@@ -88,7 +89,7 @@ const imgConvertLink = async() => {
 
   await bitable.ui.showToast({
     toastType: 'loading',
-    message: '正在转换中...'
+    message: t('toast.isTransfering')
   })
 
   for (let recordId of RecordList) {
@@ -121,7 +122,7 @@ const imgConvertLink = async() => {
 
   await bitable.ui.showToast({
     toastType: 'success',
-    message: '转换完成'
+    message: t('toast.finished')
   })
 
 }
