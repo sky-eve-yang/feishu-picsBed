@@ -1,5 +1,6 @@
 <template>
   <div style="width: 100%;padding-left: 10px;border-left: 5px solid #2598f8;margin-bottom: 20px;padding-top: 5px;">CDN 插件</div>
+  <div style="line-height: 1.5;font-size: 14px;color: #909399;">适用场景：希望将附件上传至个人或公司指定CDN网址，并获取CDN链接</div>
   <el-form style="margin-top: 30px;" ref="form" :model="formData" label-width="60px">
     <el-alert  title="Tip：请填写如下阿里云oss配置信息" type="info" />
     <!-- oss 配置部分 -->
@@ -52,30 +53,8 @@ const fileUrl = ref('');
 
 
 // -- 核心算法区域
-// --001== 上传文件file至阿里云oss
-const uploadFile = async (file, recordId) => {
-  const client = new OSS({...ossConfig.value});
-  
-  try {
-    const result = await client.put(`${formatDate()}/${recordId}.jpg`, file);
-    console.log(result)
-    fileUrl.value = result.url; // 获取上传后的文件URL
-    console.log('文件上传成功，URL:', fileUrl.value);
-
-    return fileUrl.value
-  } catch (e) {
-    console.error('文件上传失败:', e);
-
-    return error
-  }
-};
-
-
-// -- 辅助算法区域
-
 // --001== 获取附件单元格的图片，上传到oss，并写回对应的链接字段
 const imgConvertLink = async() => {
-
   // 非空判断
   if (ossConfig.value.region && ossConfig.value.accessKeyId && ossConfig.value.accessKeySecret && ossConfig.value.bucket && attchImgFieldId.value && linkFieldId.value) {
     console.log('必填信息已填写')
@@ -84,15 +63,14 @@ const imgConvertLink = async() => {
       toastType: 'warning',
       message: '请填写必要信息'
     })
-
     return
   }
 
   // 存入到缓存中
-  localStorage.setItem('ossConfig', JSON.stringify(ossConfig.value))
-  localStorage.setItem('attchImgFieldId', attchImgFieldId.value)
-  localStorage.setItem('linkFieldId', linkFieldId.value)
-  
+  localStorage.setItem('ossConfig', JSON.stringify(ossConfig.value))  // 阿里云oss配置
+  localStorage.setItem('attchImgFieldId', attchImgFieldId.value)   // 附件字段ID
+  localStorage.setItem('linkFieldId', linkFieldId.value)  // 链接字段ID
+
   // 加载bitable实例
   const { tableId, viewId } = await bitable.base.getSelection();
   const table = await bitable.base.getActiveTable();
@@ -100,7 +78,7 @@ const imgConvertLink = async() => {
 
   // ## mode1: 全部记录
   // const RecordList = await view.getVisibleRecordIdList()
-  
+
   // ## model2: 交互式选择记录 
   const RecordList = await bitable.ui.selectRecordIdList(tableId, viewId);
 
@@ -114,21 +92,31 @@ const imgConvertLink = async() => {
   })
 
   for (let recordId of RecordList) {
-    const attchImgUrl = await attachmentField.getAttachmentUrls(recordId)
+    let attchImgUrl = null
+    try {
+      attchImgUrl = await attachmentField.getAttachmentUrls(recordId)
+    } catch(e) {
+      continue
+    }
+    console.log("attchImgUrl:", attchImgUrl)
     console.log("recordId:", recordId)
+    // attchImgUrl 为列表时
+    if (attchImgUrl.length > 1) {
+      let totalCDNLink = ''
+      for (let tempUrl of attchImgUrl) {
+        const CDNLink = await getCDNLinkByTempUrl(tempUrl, recordId)
+        totalCDNLink += ( CDNLink+ ';' )
+      }
+      totalCDNLink = totalCDNLink.slice(0, -1)
+      await linkField.setValue(recordId, totalCDNLink)  
+      
 
-    // 步骤1: 从URL获取Blob对象
-    const response = await fetch(attchImgUrl);
-    const blob = await response.blob();
+    } else { // attchImgUrl 为单值时
+      const CDNLink = await getCDNLinkByTempUrl(attchImgUrl, recordId)
+      await linkField.setValue(recordId, CDNLink)  
+    }
 
-    // 步骤2: 将Blob转换为File对象
-    const file = new File([blob], "image.jpg", { type: blob.type });
-    console.log("file: ", file)
-    // 步骤3：上传File对象到OSS
-    const CDNLink = await uploadFile(file, recordId)
-    console.log('CDNLink', CDNLink)
     // 步骤4：将链接写回对应单元格
-    await linkField.setValue(recordId, CDNLink)  
   }
 
   await bitable.ui.showToast({
@@ -137,6 +125,25 @@ const imgConvertLink = async() => {
   })
 
 }
+
+
+
+// -- 辅助算法区域
+// --001== 上传文件file至阿里云oss
+const uploadFile = async (file, recordId) => {
+  const client = new OSS({...ossConfig.value});
+  
+  try {
+    const result = await client.put(`${formatDate()}/${recordId}${generate4RandomChars()}.jpg`, file);
+    console.log(result)
+    fileUrl.value = result.url; // 获取上传后的文件URL
+    return fileUrl.value
+  } catch (e) {
+    console.error('文件上传失败:', e);
+
+    return error
+  }
+};
 
 // --002== 格式化输出当前时间 yyyy/mm/dd
 const formatDate = () => {
@@ -155,8 +162,8 @@ const formatDate = () => {
 // --003== 生成四位随机字符
 const generate4RandomChars = () => {
   // 生成四位随机字符
-  const randomString = '';
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let randomString = '';
+  let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   
   for (let i = 0; i < 4; i++) {
     let randomIndex = Math.floor(Math.random() * characters.length);
@@ -165,6 +172,21 @@ const generate4RandomChars = () => {
   
   // 输出结果
   return randomString;
+}
+
+// --004 core== 依据附件的临时链接，上传至CDN，获得CDNLink
+const getCDNLinkByTempUrl = async (attchImgUrl, recordId) => {
+  // 步骤1: 从URL获取Blob对象
+  const response = await fetch(attchImgUrl);
+  const blob = await response.blob();
+
+  // 步骤2: 将Blob转换为File对象
+  const file = new File([blob], "image.jpg", { type: blob.type });
+  console.log("file: ", file)
+  // 步骤3：上传File对象到OSS
+  const CDNLink = await uploadFile(file, recordId)
+  console.log('CDNLink', CDNLink)
+  return CDNLink
 }
 
 
@@ -190,11 +212,6 @@ onMounted(async () => {
 
 });
 
-onUnmounted( () => {
-  localStorage.setItem('ossConfig', JSON.stringify(ossConfig.value))
-  localStorage.setItem('attchImgFieldId', attchImgFieldId.value)
-  localStorage.setItem('linkFieldId', linkFieldId.value)
-})
 
 </script>
 
