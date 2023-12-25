@@ -5,10 +5,10 @@
     <el-alert style="background-color: #e1eaff;color: #606266;"  :title="$t('ossTip')" type="info" />
     <!-- oss 配置部分 -->
     <el-form-item label="OSS" size="large" required>
-      accessKeyId<el-input type="password" v-model="ossConfig.accessKeyId" :placeholder="$t('placeholder.accessKeyId')" />
+      accessKeyId<el-input v-model="ossConfig.accessKeyId" :placeholder="$t('placeholder.accessKeyId')" />
       accessKeySecret<el-input type="password" v-model="ossConfig.accessKeySecret" :placeholder="$t('placeholder.accessKeySecret')" />
       region<el-input v-model="ossConfig.region" :placeholder="$t('placeholder.region')" />
-      bucket<el-input type="password" v-model="ossConfig.bucket" :placeholder="$t('placeholder.bucket')" />
+      bucket<el-input v-model="ossConfig.bucket" :placeholder="$t('placeholder.bucket')" />
     </el-form-item>
 
     <el-alert style="margin: 20px 0 20px 0;background-color: #e1eaff;color: #606266;" :title="$t('fieldSelectedTip')" type="info" />
@@ -22,6 +22,58 @@
         <el-option v-for="meta in fieldListSeView" :key="meta.id" :label="meta.name" :value="meta.id" />
       </el-select>
     </el-form-item>
+
+
+    <div></div>
+
+    <el-form-item :label="$t('labels.reshape')" size="large">
+      <!-- <h3>图像处理</h3> -->
+      <div>
+        <el-checkbox v-model="isImageReshaped" :label="$t('reshape.isUsed')" size="large" />
+      </div>
+
+      <div v-if="isImageReshaped" style="display: flex;flex-direction: row;align-items: center;">
+        <div style="width: 40%;">
+          <el-input width="200"  type="number" v-model="imageSize.width" :placeholder="$t('placeholder.width')">
+            <template #prepend>{{ $t('reshape.width') }}</template>
+          </el-input>
+        </div>
+        
+        <span style="margin: 0 20px;">×</span>  
+        <div style="width: 40%;">
+          <el-input  type="number" v-model="imageSize.height" :placeholder="$t('placeholder.height')">
+            <template #prepend>{{ $t('reshape.height') }}</template>
+          </el-input>
+        </div>
+      </div>
+
+      <div v-if="isImageReshaped" style="margin-top: 20px;">
+        <el-radio-group v-model="reshapeMode" class="ml-4">
+          <el-tooltip
+            class="box-item"
+            effect="dark"
+            :content="$t('tooltip.fill')"
+            placement="top-start"
+          >
+            <el-radio label="fill" size="large">Fill Mode</el-radio>
+          </el-tooltip>
+
+          <el-tooltip
+            class="box-item"
+            effect="dark"
+            :content="$t('tooltip.pad')"
+            placement="top-start"
+          >
+            <el-radio label="pad" size="large">Pad Mode</el-radio>
+          </el-tooltip>
+          
+        </el-radio-group>
+      </div>
+    </el-form-item>
+    
+
+    
+    
 
     <el-button @click="imgConvertLink">{{ $t('tranfer') }}</el-button>
 
@@ -49,6 +101,15 @@ const ossConfig = ref({
 })
 // 数据 -- end
 
+
+const isImageReshaped = ref(false)
+const reshapeMode = ref('fill')
+const imageSize = ref({
+  width: 800,
+  height: 800
+})
+
+
 const fileUrl = ref('');
 const { t } = useI18n();
 
@@ -71,6 +132,9 @@ const imgConvertLink = async() => {
   localStorage.setItem('ossConfig', JSON.stringify(ossConfig.value))  // 阿里云oss配置
   localStorage.setItem('attchImgFieldId', attchImgFieldId.value)   // 附件字段ID
   localStorage.setItem('linkFieldId', linkFieldId.value)  // 链接字段ID
+  localStorage.setItem('isImageReshaped', isImageReshaped.value)  // 是否启动图像处理参数
+  localStorage.setItem('imageSize', JSON.stringify(imageSize.value))  // 图像宽高设置
+  localStorage.setItem('reshapeMode', reshapeMode.value)  // 图像处理模式：fill、pad
 
   // 加载bitable实例
   const { tableId, viewId } = await bitable.base.getSelection();
@@ -186,8 +250,15 @@ const getCDNLinkByTempUrl = async (attchImgUrl, recordId) => {
   console.log("file: ", file)
   // 步骤3：上传File对象到OSS
   const CDNLink = await uploadFile(file, recordId)
-  console.log('CDNLink', CDNLink)
-  return CDNLink
+
+  let res = CDNLink
+  if (isImageReshaped.value) {
+    res += `?x-oss-process=image/resize,m_${reshapeMode.value},h_${imageSize.value.height},w_${imageSize.value.width},limit_0`
+  }
+  console.log('getCDNLinkByTempUrl() >> CDNLink', res)
+
+
+  return res
 }
 
 
@@ -208,6 +279,15 @@ onMounted(async () => {
   }
   if (localStorage.getItem('linkFieldId') !== null) {
     linkFieldId.value = localStorage.getItem('linkFieldId')
+  }
+  // if (localStorage.getItem('isImageReshaped') !== null) {
+  //   isImageReshaped.value = localStorage.getItem('isImageReshaped')
+  // }
+  if (localStorage.getItem('reshapeMode') !== null) {
+    reshapeMode.value = localStorage.getItem('reshapeMode')
+  }
+  if (localStorage.getItem('imageSize') !== null) {
+    imageSize.value = JSON.parse(localStorage.getItem('imageSize')) 
   }
   // 从缓存中获取数据 -- end
 

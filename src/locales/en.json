@@ -1,25 +1,38 @@
 {
   "title": "CDN Plugin",
-  "desc": "Applicable scenarios: For uploading attachments to a specified personal or company CDN source and obtaining the CDN link.<br/>Currently supported: Alibaba Cloud √ Tencent Cloud × Qiniu Cloud ×. If you need support for other CDN sources, please join the plugin group and push the author.",
+  "desc": "Applicable Scenarios: For uploading attachments to a personal or company designated CDN source and obtaining CDN links. <br/>Currently Supported: Alibaba Cloud √ Tencent Cloud × Qiniu Cloud ×. If there is a need for other CDN sources, please join the plugin group and contact the author.",
   "ossTip": "Tip: Please fill in the following Alibaba Cloud OSS configuration information",
   "placeholder": {
-    "accessKeyId": "Please fill in the accessKeyId",
-    "accessKeySecret": "Please fill in the accessKeySecret",
+    "accessKeyId": "Please fill in accessKeyId",
+    "accessKeySecret": "Please fill in accessKeySecret",
     "region": "e.g., oss-cn-beijing",
     "bucket": "Please fill in the bucket name",
-    "attchment": "Please select the field where the attachment is located",
-    "link": "Please select the field where the link is located"
+    "attachment": "Please select the field where the attachment is located",
+    "link": "Please select the field where the link is located",
+    "width": "Please enter the expected image width",
+    "height": "Please enter the expected image height"
   },
-  "fieldSelectedTip": "Tip: Please select the attachment and link fields",
+  "fieldSelectedTip": "Tip: Please select the attachment field, link field, and image processing parameters (optional)",
+  "imageReshapeTip": "Tip: Please select the image processing method",
   "labels": {
     "oss": "OSS",
-    "attchment": "Attachment",
-    "link": "Link"
+    "attachment": "Attachment",
+    "link": "Link",
+    "reshape": "Parameters"
   },
-  "tranfer": "Image Hosting Conversion",
+  "transfer": "Image Hosting Conversion",
   "toast": {
-    "lackRequiredInfo": "Please fill in the required information",
+    "lackRequiredInfo": "Please fill in the necessary information",
     "isTransfering": "Transferring...",
-    "finished": "Conversion Completed"
+    "finished": "Transfer Complete"
+  },
+  "reshape": {
+    "width": "Width",
+    "height": "Height",
+    "isUsed": "Enable"
+  },
+  "tooltip": {
+    "fill": "Center and scale the original image proportionally, cropping the excess parts",
+    "pad": "Center and scale the original image proportionally, filling the excess parts with white"
   }
 }

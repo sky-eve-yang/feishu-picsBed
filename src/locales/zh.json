@@ -8,18 +8,31 @@
     "region": "例如 oss-cn-beijing",
     "bucket": "请填写 bucket 名称",
     "attchment": "请选择附件所在字段",
-    "link": "请选择链接所在字段"
+    "link": "请选择链接所在字段",
+    "width": "请输入预期图像宽度",
+    "height": "请输入预期图像高度"
   },
-  "fieldSelectedTip": "Tip：请选择附件字段和链接字段",
+  "fieldSelectedTip": "Tip：请选择附件字段、链接字段及图像处理参数（可选）",
+  "imageReshapeTip": "Tip：请选择图像处理方式",
   "labels": {
     "oss": "OSS",
     "attchment": "附件",
-    "link": "链接"
+    "link": "链接",
+    "reshape": "参数"
   },
   "tranfer": "图床转换",
   "toast": {
     "lackRequiredInfo": "请填写必要信息",
     "isTransfering": "正在转换中...",
     "finished": "转换完成"
+  },
+  "reshape": {
+    "width": "宽度",
+    "height": "高度",
+    "isUsed": "启用"
+  },
+  "tooltip": {
+    "fill": "将原图居中等比缩放，超出部分裁剪",
+    "pad": "将原图居中等比缩放，超出部分白色填充"
   }
 }
