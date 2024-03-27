@@ -93,13 +93,11 @@ const linkFieldId = ref('')
 const fieldListSeView = ref([])
 
 const ossConfig = ref({
-  endpoint: 'http://sl.siluerp.com',
   region: '',
   accessKeyId: '',
   accessKeySecret: '',
   bucket: '',
   secure: true,
-  cname: true
 })
 // 数据 -- end
 
