@@ -4,7 +4,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview --port 4173"
+    "preview": "vite preview --port 4173",
+    "deploy": "vite build && gh-pages -d dist"
   },
   "dependencies": {
     "@lark-base-open/js-sdk": "^0.3.5",
@@ -16,6 +17,7 @@
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^3.0.1",
+    "gh-pages": "^6.1.1",
     "unplugin-auto-import": "^0.16.4",
     "unplugin-vue-components": "^0.25.1",
     "vite": "^3.0.1"

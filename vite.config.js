@@ -11,6 +11,7 @@ export default defineConfig({
   server: {
     host: true
   },
+  base: '/feishu-picsBed/',
   plugins: [
     vue(),
     AutoImport({

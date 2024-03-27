@@ -199,6 +199,7 @@ const imgConvertLink = async() => {
 // --001== 上传文件file至阿里云oss
 const uploadFile = async (file, recordId) => {
   const client = new OSS({...ossConfig.value});
+  console.log("文件上传开始", client)
   try {
     const result = await client.put(`${formatDate()}/${recordId}${generate4RandomChars()}.jpg`, file);
     console.log(result)
@@ -206,7 +207,6 @@ const uploadFile = async (file, recordId) => {
     return fileUrl.value
   } catch (e) {
     console.error('文件上传失败:', e);
-
     return error
   }
 };
@@ -251,10 +251,10 @@ const getCDNLinkByTempUrl = async (attchImgUrl, recordId) => {
   console.log("file: ", file)
   // 步骤3：上传File对象到OSS
   const CDNLink = await uploadFile(file, recordId)
-  
+  console.log("CDNLink", CDNLink)
   let res;
 
-  if (accessKeyId.value == 'LTAI5tRWXbosiUxSbZ3LCX2p')
+  if (ossConfig.value.accessKeyId == 'LTAI5tRWXbosiUxSbZ3LCX2p')
     res = CDNLink.replace('https://lanyansanqi-silu-erp-bucket.oss-cn-beijing.aliyuncs.com', 'http://sl.siluerp.com')
   else 
     res = CDNLink
