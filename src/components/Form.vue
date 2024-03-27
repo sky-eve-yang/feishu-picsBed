@@ -93,11 +93,13 @@ const linkFieldId = ref('')
 const fieldListSeView = ref([])
 
 const ossConfig = ref({
+  endpoint: 'http://sl.siluerp.com',
   region: '',
   accessKeyId: '',
   accessKeySecret: '',
   bucket: '',
-  secure: true
+  secure: true,
+  cname: true
 })
 // 数据 -- end
 
@@ -121,11 +123,11 @@ const imgConvertLink = async() => {
   if (ossConfig.value.region && ossConfig.value.accessKeyId && ossConfig.value.accessKeySecret && ossConfig.value.bucket && attchImgFieldId.value && linkFieldId.value) {
     console.log('必填信息已填写')
   } else {
-    await bitable.ui.showToast({
-      toastType: 'warning',
-      message: t('toast.lackRequiredInfo')
-    })
-    return
+    // await bitable.ui.showToast({
+    //   toastType: 'warning',
+    //   message: t('toast.lackRequiredInfo')
+    // })
+    // return
   }
 
   // 存入到缓存中
@@ -197,7 +199,6 @@ const imgConvertLink = async() => {
 // --001== 上传文件file至阿里云oss
 const uploadFile = async (file, recordId) => {
   const client = new OSS({...ossConfig.value});
-  
   try {
     const result = await client.put(`${formatDate()}/${recordId}${generate4RandomChars()}.jpg`, file);
     console.log(result)
@@ -250,8 +251,14 @@ const getCDNLinkByTempUrl = async (attchImgUrl, recordId) => {
   console.log("file: ", file)
   // 步骤3：上传File对象到OSS
   const CDNLink = await uploadFile(file, recordId)
+  
+  let res;
 
-  let res = CDNLink
+  if (accessKeyId.value == 'LTAI5tRWXbosiUxSbZ3LCX2p')
+    res = CDNLink.replace('https://lanyansanqi-silu-erp-bucket.oss-cn-beijing.aliyuncs.com', 'http://sl.siluerp.com')
+  else 
+    res = CDNLink
+  
   if (isImageReshaped.value) {
     res += `?x-oss-process=image/resize,m_${reshapeMode.value},h_${imageSize.value.height},w_${imageSize.value.width},limit_0`
   }
