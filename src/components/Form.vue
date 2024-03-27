@@ -123,11 +123,11 @@ const imgConvertLink = async() => {
   if (ossConfig.value.region && ossConfig.value.accessKeyId && ossConfig.value.accessKeySecret && ossConfig.value.bucket && attchImgFieldId.value && linkFieldId.value) {
     console.log('必填信息已填写')
   } else {
-    // await bitable.ui.showToast({
-    //   toastType: 'warning',
-    //   message: t('toast.lackRequiredInfo')
-    // })
-    // return
+    await bitable.ui.showToast({
+      toastType: 'warning',
+      message: t('toast.lackRequiredInfo')
+    })
+    return
   }
 
   // 存入到缓存中
@@ -254,10 +254,12 @@ const getCDNLinkByTempUrl = async (attchImgUrl, recordId) => {
   console.log("CDNLink", CDNLink)
   let res;
 
-  if (ossConfig.value.accessKeyId == 'LTAI5tRWXbosiUxSbZ3LCX2p')
-    res = CDNLink.replace('https://lanyansanqi-silu-erp-bucket.oss-cn-beijing.aliyuncs.com', 'http://sl.siluerp.com')
-  else 
-    res = CDNLink
+  // if (ossConfig.value.accessKeyId == 'LTAI5tRWXbosiUxSbZ3LCX2p')
+  //   res = CDNLink.replace('https://lanyansanqi-silu-erp-bucket.oss-cn-beijing.aliyuncs.com', 'http://sl.siluerp.com')
+  // else 
+  //   res = CDNLink
+
+  res = CDNLink.replace('https://lanyansanqi-silu-erp-bucket.oss-cn-beijing.aliyuncs.com', 'http://sl.siluerp.com')
   
   if (isImageReshaped.value) {
     res += `?x-oss-process=image/resize,m_${reshapeMode.value},h_${imageSize.value.height},w_${imageSize.value.width},limit_0`
