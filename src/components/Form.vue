@@ -3,6 +3,9 @@
   <div style="line-height: 1.5;font-size: 14px;color: #909399;" v-html="$t('desc')"></div>
   <el-form style="margin-top: 30px;" ref="form" :model="formData" label-width="60px">
     <el-alert style="background-color: #e1eaff;color: #606266;"  :title="$t('ossTip')" type="info" />
+    <el-link style="color: #3e75f5;margin: 20px 0;" type="primary" href="https://jfsq6znqku.feishu.cn/wiki/B09wwgeQsinKtykyT68cBs2Dndg?fromScene=spaceOverview"
+  target="_blank">👉  {{ $t('labels.apiDocument') }}</el-link>
+    
     <!-- oss 配置部分 -->
     <el-form-item label="OSS" size="large" required>
       accessKeyId<el-input v-model="ossConfig.accessKeyId" :placeholder="$t('placeholder.accessKeyId')" />
@@ -10,6 +13,7 @@
       region<el-input v-model="ossConfig.region" :placeholder="$t('placeholder.region')" />
       bucket<el-input v-model="ossConfig.bucket" :placeholder="$t('placeholder.bucket')" />
     </el-form-item>
+    
 
     <el-alert style="margin: 20px 0 20px 0;background-color: #e1eaff;color: #606266;" :title="$t('fieldSelectedTip')" type="info" />
     <el-form-item :label="$t('labels.attchment')" size="large" required>

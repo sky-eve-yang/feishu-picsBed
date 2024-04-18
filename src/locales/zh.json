@@ -18,7 +18,8 @@
     "oss": "OSS",
     "attchment": "附件",
     "link": "链接",
-    "reshape": "参数"
+    "reshape": "参数",
+    "apiDocument": "如有疑问，请点击说明文档"
   },
   "tranfer": "图床转换",
   "toast": {

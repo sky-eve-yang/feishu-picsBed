@@ -18,7 +18,8 @@
     "oss": "OSS",
     "attachment": "Attachment",
     "link": "Link",
-    "reshape": "Parameters"
+    "reshape": "Parameters",
+    "apiDocument": "If in doubt, please click on the documentation"
   },
   "transfer": "Image Hosting Conversion",
   "toast": {
